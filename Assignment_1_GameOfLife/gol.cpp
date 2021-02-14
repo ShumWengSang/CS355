@@ -13,12 +13,13 @@ using Position = std::tuple<int, int>;
 using Mutex = pthread_mutex_t;
 using Thread = pthread_t;
 using Semaphore = sem_t ;
+using Map2D = std::vector<std::vector<char>>;
 
 // Semaphore writeArraySemaphore;
 
 struct Arguments
 {
-    std::vector<std::vector<bool>>* Map;
+    Map2D* Map;
     Thread* threads;
     int x;
     int y;
@@ -106,7 +107,7 @@ std::ostream& operator<<(std::ostream& os, Position const & pos )
 //     return false;
 // }
 
-static int countLiveNeighbors(std::vector<std::vector<bool>> const & map, int curr_x, int curr_y)
+static int countLiveNeighbors(Map2D const & map, int curr_x, int curr_y)
 {
     int neighborCount = 0;
     const int max_y = map[0].size();
@@ -144,7 +145,7 @@ static int countLiveNeighbors(std::vector<std::vector<bool>> const & map, int cu
 }
 
 // Return true if cell survives, false if cell does not.
-static bool ProcessCell(std::vector<std::vector<bool>> const & map, int curr_x, int curr_y)
+static bool ProcessCell(Map2D const & map, int curr_x, int curr_y)
 {
     // Get if cell is dead or alive
     bool isAlive = map[curr_x][curr_y];
@@ -176,7 +177,7 @@ static void * RunCell(void *p)
     Arguments* args = reinterpret_cast<Arguments*>(p);
 
     // Retrieve all arguments
-    std::vector<std::vector<bool>> & Map = *args->Map;
+    Map2D & Map = *args->Map;
 
     int iterations = args->iterations;
     const int x = args->x;
@@ -192,7 +193,7 @@ static void * RunCell(void *p)
         bool nextState = ProcessCell(Map, x, y);
 
         // Wait for all threads to finish calculations.
-        waitForFinishCalc->Wait();
+        waitForFinishCalc->Phase1();
 
         // Write state to array
         {
@@ -218,7 +219,8 @@ static void * RunCell(void *p)
         }
         
         // Wait for all threads to finish writes
-        waitForFinishWrite->Wait();
+        //waitForFinishWrite->Wait();
+        waitForFinishCalc->Phase2();
         #ifdef DEBUG
         if(args->x == 0 && args->y == 0)
         {
@@ -268,7 +270,7 @@ run(std::vector<Position> initial_population, int num_iter, int max_x, int max_y
     }
 
     // We will create our own representation of the 2D Map
-    std::vector<std::vector<bool>> Map;
+    Map2D Map;
     {
         Map.resize(max_x);
         for(int i = 0; i < max_x; i++)
