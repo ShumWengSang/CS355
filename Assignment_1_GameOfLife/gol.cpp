@@ -135,7 +135,7 @@ static int countLiveNeighbors(std::vector<Position> const & positions, int curr_
 }
 
 // Return true if cell survives, false if cell does not.
-static bool ProcessCell(std::vector<Position> & positions, int curr_x, int curr_y, int max_x, int max_y, int iter)
+static bool ProcessCell(std::vector<Position> & positions, int curr_x, int curr_y, int max_x, int max_y)
 {
     // Get if cell is dead or alive
     bool isAlive = (std::find(positions.begin(), positions.end(),std::make_tuple(curr_x, curr_y)) 
@@ -167,7 +167,6 @@ static void * RunCell(void *p)
 {
     Arguments* args = reinterpret_cast<Arguments*>(p);
 
-    int threadID = pthread_self();
     // Retrieve all arguments
     std::vector<Position> & pos = *args->positions;
 
@@ -180,7 +179,7 @@ static void * RunCell(void *p)
         bool isAlive = (cellVectorIter != pos.end());
 
         // Calculate next step
-        bool nextState = ProcessCell(pos, args->x, args->y, args->max_x, args->max_y, iterations);
+        bool nextState = ProcessCell(pos, args->x, args->y, args->max_x, args->max_y);
 
         // Wait for all threads to finish calculations.
         waitForFinishCalc->Wait();
