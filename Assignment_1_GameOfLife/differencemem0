@@ -1,0 +1,127 @@
+==7502== error calling PR_SET_PTRACER, vgdb might block
+==7502== Thread 19:
+==7502== Invalid read of size 4
+==7502==    at 0x10B95C: RunCell(void*) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x4E456DA: start_thread (pthread_create.c:463)
+==7502==    by 0x571F71E: clone (clone.S:95)
+==7502==  Address 0x5da10ac is 4 bytes after a block of size 24 free'd
+==7502==    at 0x4C3323B: operator delete(void*) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==7502==    by 0x10B2F5: void std::vector<std::tuple<int, int>, std::allocator<std::tuple<int, int> > >::_M_realloc_insert<std::tuple<int, int> >(__gnu_cxx::__normal_iterator<std::tuple<int, int>*, std::vector<std::tuple<int, int>, std::allocator<std::tuple<int, int> > > >, std::tuple<int, int>&&) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x10BB70: RunCell(void*) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x4E456DA: start_thread (pthread_create.c:463)
+==7502==    by 0x571F71E: clone (clone.S:95)
+==7502==  Block was alloc'd at
+==7502==    at 0x4C3217F: operator new(unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==7502==    by 0x10AFCD: test(char const*, int) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x109B0C: main (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502== 
+==7502== Invalid write of size 4
+==7502==    at 0x10B964: RunCell(void*) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x4E456DA: start_thread (pthread_create.c:463)
+==7502==    by 0x571F71E: clone (clone.S:95)
+==7502==  Address 0x5da10a4 is 20 bytes inside a block of size 24 free'd
+==7502==    at 0x4C3323B: operator delete(void*) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==7502==    by 0x10B2F5: void std::vector<std::tuple<int, int>, std::allocator<std::tuple<int, int> > >::_M_realloc_insert<std::tuple<int, int> >(__gnu_cxx::__normal_iterator<std::tuple<int, int>*, std::vector<std::tuple<int, int>, std::allocator<std::tuple<int, int> > > >, std::tuple<int, int>&&) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x10BB70: RunCell(void*) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x4E456DA: start_thread (pthread_create.c:463)
+==7502==    by 0x571F71E: clone (clone.S:95)
+==7502==  Block was alloc'd at
+==7502==    at 0x4C3217F: operator new(unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==7502==    by 0x10AFCD: test(char const*, int) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x109B0C: main (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502== 
+==7502== Invalid read of size 4
+==7502==    at 0x10B968: RunCell(void*) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x4E456DA: start_thread (pthread_create.c:463)
+==7502==    by 0x571F71E: clone (clone.S:95)
+==7502==  Address 0x5da10a8 is 0 bytes after a block of size 24 free'd
+==7502==    at 0x4C3323B: operator delete(void*) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==7502==    by 0x10B2F5: void std::vector<std::tuple<int, int>, std::allocator<std::tuple<int, int> > >::_M_realloc_insert<std::tuple<int, int> >(__gnu_cxx::__normal_iterator<std::tuple<int, int>*, std::vector<std::tuple<int, int>, std::allocator<std::tuple<int, int> > > >, std::tuple<int, int>&&) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x10BB70: RunCell(void*) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x4E456DA: start_thread (pthread_create.c:463)
+==7502==    by 0x571F71E: clone (clone.S:95)
+==7502==  Block was alloc'd at
+==7502==    at 0x4C3217F: operator new(unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==7502==    by 0x10AFCD: test(char const*, int) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x109B0C: main (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502== 
+==7502== Invalid write of size 4
+==7502==    at 0x10B96C: RunCell(void*) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x4E456DA: start_thread (pthread_create.c:463)
+==7502==    by 0x571F71E: clone (clone.S:95)
+==7502==  Address 0x5da10a0 is 16 bytes inside a block of size 24 free'd
+==7502==    at 0x4C3323B: operator delete(void*) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==7502==    by 0x10B2F5: void std::vector<std::tuple<int, int>, std::allocator<std::tuple<int, int> > >::_M_realloc_insert<std::tuple<int, int> >(__gnu_cxx::__normal_iterator<std::tuple<int, int>*, std::vector<std::tuple<int, int>, std::allocator<std::tuple<int, int> > > >, std::tuple<int, int>&&) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x10BB70: RunCell(void*) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x4E456DA: start_thread (pthread_create.c:463)
+==7502==    by 0x571F71E: clone (clone.S:95)
+==7502==  Block was alloc'd at
+==7502==    at 0x4C3217F: operator new(unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==7502==    by 0x10AFCD: test(char const*, int) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x109B0C: main (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502== 
+==7502== Syscall param futex(op) contains uninitialised byte(s)
+==7502==    at 0x4E4E7C6: futex_abstimed_wait_cancelable (futex-internal.h:205)
+==7502==    by 0x4E4E7C6: do_futex_wait.constprop.1 (sem_waitcommon.c:111)
+==7502==    by 0x4E4E8B7: __new_sem_wait_slow.constprop.0 (sem_waitcommon.c:181)
+==7502==    by 0x10B9C9: RunCell(void*) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x4E456DA: start_thread (pthread_create.c:463)
+==7502==    by 0x571F71E: clone (clone.S:95)
+==7502== 
+==7502== Thread 21:
+==7502== Syscall param futex(op) contains uninitialised byte(s)
+==7502==    at 0x4E4E7C6: futex_abstimed_wait_cancelable (futex-internal.h:205)
+==7502==    by 0x4E4E7C6: do_futex_wait.constprop.1 (sem_waitcommon.c:111)
+==7502==    by 0x4E4E8B7: __new_sem_wait_slow.constprop.0 (sem_waitcommon.c:181)
+==7502==    by 0x10B912: RunCell(void*) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x4E456DA: start_thread (pthread_create.c:463)
+==7502==    by 0x571F71E: clone (clone.S:95)
+==7502== 
+==7502== Thread 1:
+==7502== 24 bytes in 1 blocks are still reachable in loss record 1 of 7
+==7502==    at 0x4C3217F: operator new(unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==7502==    by 0x10AD99: read(char const*) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x10AF71: test(char const*, int) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x109B0C: main (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502== 
+==7502== 48 bytes in 1 blocks are still reachable in loss record 2 of 7
+==7502==    at 0x4C3217F: operator new(unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==7502==    by 0x10B244: void std::vector<std::tuple<int, int>, std::allocator<std::tuple<int, int> > >::_M_realloc_insert<std::tuple<int, int> >(__gnu_cxx::__normal_iterator<std::tuple<int, int>*, std::vector<std::tuple<int, int>, std::allocator<std::tuple<int, int> > > >, std::tuple<int, int>&&) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x10BB70: RunCell(void*) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x4E456DA: start_thread (pthread_create.c:463)
+==7502==    by 0x571F71E: clone (clone.S:95)
+==7502== 
+==7502== 112 bytes in 1 blocks are still reachable in loss record 3 of 7
+==7502==    at 0x4C3217F: operator new(unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==7502==    by 0x10B41A: run(std::vector<std::tuple<int, int>, std::allocator<std::tuple<int, int> > >, int, int, int) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x10B036: test(char const*, int) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x109B0C: main (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502== 
+==7502== 112 bytes in 1 blocks are still reachable in loss record 4 of 7
+==7502==    at 0x4C3217F: operator new(unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==7502==    by 0x10B45D: run(std::vector<std::tuple<int, int>, std::allocator<std::tuple<int, int> > >, int, int, int) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x10B036: test(char const*, int) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x109B0C: main (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502== 
+==7502== 200 bytes in 1 blocks are still reachable in loss record 5 of 7
+==7502==    at 0x4C3289F: operator new[](unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==7502==    by 0x10B4CB: run(std::vector<std::tuple<int, int>, std::allocator<std::tuple<int, int> > >, int, int, int) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x10B036: test(char const*, int) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x109B0C: main (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502== 
+==7502== 1,000 bytes in 1 blocks are still reachable in loss record 6 of 7
+==7502==    at 0x4C3289F: operator new[](unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==7502==    by 0x10B4B9: run(std::vector<std::tuple<int, int>, std::allocator<std::tuple<int, int> > >, int, int, int) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x10B036: test(char const*, int) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x109B0C: main (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502== 
+==7502== 7,200 bytes in 25 blocks are possibly lost in loss record 7 of 7
+==7502==    at 0x4C33B25: calloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==7502==    by 0x4013646: allocate_dtv (dl-tls.c:286)
+==7502==    by 0x4013646: _dl_allocate_tls (dl-tls.c:530)
+==7502==    by 0x4E46227: allocate_stack (allocatestack.c:627)
+==7502==    by 0x4E46227: pthread_create@@GLIBC_2.2.5 (pthread_create.c:644)
+==7502==    by 0x10B560: run(std::vector<std::tuple<int, int>, std::allocator<std::tuple<int, int> > >, int, int, int) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x10B036: test(char const*, int) (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502==    by 0x109B0C: main (in /home/roland/CS355/Assignment_1_GameOfLife/gnu.exe)
+==7502== 

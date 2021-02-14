@@ -9,10 +9,10 @@ CYGWIN=-Wl,--enable-auto-import
 endif
 
 GCC=g++
-GCCFLAGS=-O2 -Wall -Wextra -std=c++11 -pedantic -Wold-style-cast -Woverloaded-virtual -Wsign-promo  -Wctor-dtor-privacy -Wnon-virtual-dtor -Wreorder
+GCCFLAGS=-O2 -Wall -Wextra -std=c++11 -pedantic -Wold-style-cast -Woverloaded-virtual -Wsign-promo  -Wctor-dtor-privacy -Wnon-virtual-dtor -Wreorder -g
 DEFINE=
 
-VALGRIND_OPTIONS=-q --leak-check=full
+VALGRIND_OPTIONS=-q --leak-check=full --trace-children=yes --show-leak-kinds=all --gen-suppressions=yes
 DIFF_OPTIONS=-y --strip-trailing-cr --suppress-common-lines
 
 OBJECTS0=gol.cpp
@@ -30,5 +30,10 @@ gcc0:
 	./$(PRG) $@ >studentout$@
 	@echo "lines after the next are mismatches with master output -- see out$@"
 	diff out$@ studentout$@ $(DIFFLAGS)
+
+mem0 mem1 mem2 mem3:
+	@echo "should run in less than 3000 ms"
+	valgrind $(VALGRIND_OPTIONS) ./$(PRG) $(subst mem,,$@)
+
 clean:
 	rm -f *.exe *.o *.obj
