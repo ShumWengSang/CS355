@@ -14,7 +14,7 @@ using Mutex = pthread_mutex_t;
 using Thread = pthread_t;
 using Semaphore = sem_t ;
 
-Semaphore writeArraySemaphore;
+// Semaphore writeArraySemaphore;
 
 struct Arguments
 {
@@ -179,14 +179,17 @@ static void * RunCell(void *p)
     std::vector<std::vector<bool>> & Map = *args->Map;
 
     int iterations = args->iterations;
+    const int x = args->x;
+    const int y = args->y;
+
     //printf("Here 1\n");
     while(iterations-- > 0)
     {
         // Get current state of cell
-        bool isAlive = Map[args->x][args->y];
+        bool isAlive = Map[x][y];
 
         // Calculate next step
-        bool nextState = ProcessCell(Map, args->x, args->y);
+        bool nextState = ProcessCell(Map, x, y);
 
         // Wait for all threads to finish calculations.
         waitForFinishCalc->Wait();
@@ -201,7 +204,7 @@ static void * RunCell(void *p)
                     #ifdef DEBUG
                     printf("Turning [%d,%d] alive\n", args->x, args->y);
                     #endif
-                    Map[args->x][args->y] = true;
+                    Map[x][y] = true;
                 }
                 else
                 // If we are dead, remove from array.
@@ -209,7 +212,7 @@ static void * RunCell(void *p)
                     #ifdef DEBUG
                     printf("Killing [%d,%d]\n", args->x, args->y);
                     #endif
-                    Map[args->x][args->y] = false;
+                    Map[x][y] = false;
                 }
             }
         }

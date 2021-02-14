@@ -5,13 +5,22 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "node",
+            "name": "(gdb) Launch",
+            "type": "cppdbg",
             "request": "launch",
-            "name": "Launch Program",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "program": "${workspaceRoot}/Assignment_1_GameOfLife/gnu.exe"
+            "program": "${workspaceFolder}/Assignment_1_GameOfLife/gnu.exe",
+            "args": ["0"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
         }
     ]
 }
