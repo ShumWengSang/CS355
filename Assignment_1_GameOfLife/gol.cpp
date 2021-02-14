@@ -3,9 +3,10 @@
 #include <pthread.h>
 #include <algorithm>
 #include <semaphore.h>
+#include <unordered_map>
 
-// #define DEBUG
-// #define LOUD
+//#define DEBUG
+//#define LOUD
 void draw( std::vector< std::tuple<int,int> > & population, int max_x, int max_y );
 
 using Position = std::tuple<int, int>;
@@ -17,7 +18,7 @@ Semaphore writeArraySemaphore;
 
 struct Arguments
 {
-    std::vector<Position> * positions;
+    std::vector<std::vector<bool>>* Map;
     Thread* threads;
     int x;
     int y;
@@ -49,9 +50,7 @@ struct Barrier
     {
         pthread_mutex_lock(&mutex);
         {
-            count++;
-            //printf("1: Count is %d and maxCount is %d\n", count, maxCount);
-            if(count == maxCount)
+            if(++count == maxCount)
             {
                 for(int i = 0; i < maxCount; ++i)
                 {
@@ -67,8 +66,7 @@ struct Barrier
     {
         pthread_mutex_lock(&mutex);
         {
-            count--;
-            if(count == 0)
+            if(--count == 0)
             {
                 for(int i = 0; i < maxCount; ++i)
                 {
@@ -97,11 +95,22 @@ std::ostream& operator<<(std::ostream& os, Position const & pos )
     return os;
 }
 
+//static bool isNeighborOf(int curr_x, int curr_y, int other_x, int other_y)
+// {
+//     int xDiff = std::abs(curr_x - other_x);
+//     int yDiff = std::abs(curr_y - other_y);
+//     if(xDiff == 0 && yDiff == 0) // Ignore self
+//         return false;
+//     if(xDiff <= 1 && yDiff <= 1) // If the difference is only one cell away
+//         return true;
+//     return false;
+// }
 
-
-static int countLiveNeighbors(std::vector<Position> const & positions, int curr_x, int curr_y, int max_x, int max_y)
+static int countLiveNeighbors(std::vector<std::vector<bool>> const & map, int curr_x, int curr_y)
 {
     int neighborCount = 0;
+    const int max_y = map[0].size();
+    const int max_x = map.size(); 
 
     // Count the neighbors around you.
     for(int i = -1; i <= 1; ++i)
@@ -118,7 +127,7 @@ static int countLiveNeighbors(std::vector<Position> const & positions, int curr_
                 continue;
             // Check if thing exists within vector
             // printf("Evaluating 2 %d %d\n", eval_x, eval_y);
-            if(std::find(positions.begin(), positions.end(),std::make_tuple(eval_x, eval_y)) != positions.end())
+            if(map[eval_x][eval_y])
             {
                 // It exists, increment neighbor count
                 ++neighborCount;
@@ -135,13 +144,12 @@ static int countLiveNeighbors(std::vector<Position> const & positions, int curr_
 }
 
 // Return true if cell survives, false if cell does not.
-static bool ProcessCell(std::vector<Position> & positions, int curr_x, int curr_y, int max_x, int max_y)
+static bool ProcessCell(std::vector<std::vector<bool>> const & map, int curr_x, int curr_y)
 {
     // Get if cell is dead or alive
-    bool isAlive = (std::find(positions.begin(), positions.end(),std::make_tuple(curr_x, curr_y)) 
-                    != positions.end());
+    bool isAlive = map[curr_x][curr_y];
     // Get the number of neighbors
-    int neighborCount = countLiveNeighbors(positions, curr_x, curr_y, max_x, max_y);
+    int neighborCount = countLiveNeighbors(map, curr_x, curr_y);
 
     // if cell is alive with two or three neighbors, survive
     if(isAlive && (neighborCount == 2 || neighborCount == 3))
@@ -168,24 +176,22 @@ static void * RunCell(void *p)
     Arguments* args = reinterpret_cast<Arguments*>(p);
 
     // Retrieve all arguments
-    std::vector<Position> & pos = *args->positions;
+    std::vector<std::vector<bool>> & Map = *args->Map;
 
     int iterations = args->iterations;
     //printf("Here 1\n");
     while(iterations-- > 0)
     {
         // Get current state of cell
-        auto cellVectorIter = std::find(pos.begin(), pos.end(), std::make_tuple(args->x, args->y));
-        bool isAlive = (cellVectorIter != pos.end());
+        bool isAlive = Map[args->x][args->y];
 
         // Calculate next step
-        bool nextState = ProcessCell(pos, args->x, args->y, args->max_x, args->max_y);
+        bool nextState = ProcessCell(Map, args->x, args->y);
 
         // Wait for all threads to finish calculations.
         waitForFinishCalc->Wait();
 
         // Write state to array
-        sem_wait(&writeArraySemaphore);
         {
             if(nextState != isAlive) // If our state changed
             {
@@ -195,7 +201,7 @@ static void * RunCell(void *p)
                     #ifdef DEBUG
                     printf("Turning [%d,%d] alive\n", args->x, args->y);
                     #endif
-                    pos.emplace_back(std::make_tuple(args->x, args->y));
+                    Map[args->x][args->y] = true;
                 }
                 else
                 // If we are dead, remove from array.
@@ -203,16 +209,30 @@ static void * RunCell(void *p)
                     #ifdef DEBUG
                     printf("Killing [%d,%d]\n", args->x, args->y);
                     #endif
-                    pos.erase(std::find(pos.begin(), pos.end(), std::make_tuple(args->x, args->y)));
+                    Map[args->x][args->y] = false;
                 }
             }
         }
-        sem_post(&writeArraySemaphore);
+        
         // Wait for all threads to finish writes
         waitForFinishWrite->Wait();
         #ifdef DEBUG
         if(args->x == 0 && args->y == 0)
-            draw(pos, args->max_x, args->max_y);
+        {
+            std::vector<Position> result;
+
+            for(unsigned i = 0; i < Map.size(); ++i)
+            {
+                for(unsigned j = 0; j < Map[i].size(); ++j)
+                {
+                    if(Map[i][j])
+                    {
+                        result.emplace_back(std::make_tuple(i,j));
+                    }
+                }
+            }
+            draw(result, args->max_x, args->max_y);
+        }
         #endif
     }
     return 0;
@@ -222,6 +242,9 @@ static void * RunCell(void *p)
 std::vector<Position>
 run(std::vector<Position> initial_population, int num_iter, int max_x, int max_y)
 {
+    (void)max_x;
+    (void)max_y;
+
     // Reserve enough spots so it never reallocates
     initial_population.reserve(max_x * max_y);
 
@@ -230,7 +253,7 @@ run(std::vector<Position> initial_population, int num_iter, int max_x, int max_y
 
     // Initialize mutex and semaphore
     {
-        sem_init(&writeArraySemaphore, 0, 1);
+        // sem_init(&writeArraySemaphore, 0, 1);
         waitForFinishCalc = new Barrier(numOfThreads);
         waitForFinishWrite = new Barrier(numOfThreads);
     }
@@ -240,6 +263,27 @@ run(std::vector<Position> initial_population, int num_iter, int max_x, int max_y
     {
         args = new Arguments[numOfThreads];
     }
+
+    // We will create our own representation of the 2D Map
+    std::vector<std::vector<bool>> Map;
+    {
+        Map.resize(max_x);
+        for(int i = 0; i < max_x; i++)
+        {
+            Map[i].resize(max_y);
+        }
+        // Fill it with the positions
+        for(unsigned i = 0; i < initial_population.size(); ++i)
+        {
+            int element_x = std::get<0>(initial_population[i]);
+            int element_y = std::get<1>(initial_population[i]);
+            Map[element_x][element_y] = true;
+        }
+    }
+
+
+
+
 #ifdef DEBUG
     draw(initial_population, max_x, max_y);
 #endif
@@ -253,13 +297,13 @@ run(std::vector<Position> initial_population, int num_iter, int max_x, int max_y
             {
                 int index = i * max_x + j;
                 // Prepare the arguments
-                args[index].positions = &initial_population;
-                args[index].max_x = max_x;
-                args[index].max_y = max_y;
+                args[index].Map = &Map;
                 args[index].x = i;
                 args[index].y = j;
                 args[index].iterations = num_iter;
                 args[index].threads = threadIDs;
+                args[index].max_x = max_x;
+                args[index].max_y = max_y;
                 // Create each thread.
                 if(pthread_create( &threadIDs[index], 0, RunCell, &args[index]) != 0)
                     std::cerr << "Error! PThread creation error!" << std::endl;
@@ -279,11 +323,26 @@ run(std::vector<Position> initial_population, int num_iter, int max_x, int max_y
         delete[] args;
     }
 
+    // Get the positions of the data client wants.
+    std::vector<Position> result;
+    result.reserve(10);
+
+    for(unsigned i = 0; i < Map.size(); ++i)
+    {
+        for(unsigned j = 0; j < Map[i].size(); ++j)
+        {
+            if(Map[i][j])
+            {
+                result.emplace_back(std::make_tuple(i,j));
+            }
+        }
+    }
+
     // Destroy mutex
     {
-        sem_destroy(&writeArraySemaphore);
+        // sem_destroy(&writeArraySemaphore);
         delete waitForFinishCalc;
         delete waitForFinishWrite;
     }
-    return initial_population;
+    return result;
 }
