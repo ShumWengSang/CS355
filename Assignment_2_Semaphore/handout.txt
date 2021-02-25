@@ -1,0 +1,17 @@
+Do not use old pthread library in this assignment.
+
+Implement sempahore functionality using only C++11 features. 
+
+As discussed in class conditional variable is the easiest way of doing that.
+
+test0
+create and start 100 threads that with a random sleep timer. Use semaphore to limit the total number of running threads (currently 5)
+another thread - watcher - will monitor the counter and print an error message if counter > 6
+
+test1
+create and start about 20-30 threads with predefined slep timers. Total sleep time is
+23260 ms
+so when running with 5 threads total time should be 
+23260 ms / 5 = 4652 ms
+since towards the end there will be less then 5 threads, the total run time will be more then 4.652s, 
+I set timeout to 4.9s. 
