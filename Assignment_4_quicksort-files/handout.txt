@@ -1,0 +1,33 @@
+Based on the provided iterative quicksort implement multi-threaded 
+solution.
+
+Requirements:
+1) QS algorithm has to be based on the provided iterative implementation.
+   This also means you will ONLY use operator< for sorting.
+2) Only standard C++11 features: which means no "mutex_t", "sem_t", "pthread_*", etc.
+3) Some kind of lock-based thread safe container.
+4) comment inside quicksort function - what is the best number of threads to sort 
+   array of 200 Ratios with the delay.
+
+Expectations:
+1) your implementation with Ratio (which has a delay in comparison)
+   will run faster than std::sort
+
+Things to consider:
+1) data or task decomposition. This is already decided by the requirement 1). But
+   quick discussion: data decomposition is usually a better/simpler approach.
+   But it is not applicable in quicksort - pivot splits data into uneven chunks.
+
+2) how to tell threads that computation is over. Notice that the stack of tasks 
+may get empty several times before the array is sorted. Actually it will become empty
+right after the first thread gets the first range from the stack. The range is the whole
+original array. Suggested approach - an empty range or a NULL array pointer may signal 
+that computation is over. Two subquestions: 
+ - how to tell the rest (unknown number) of threads to stop as well - continue 
+   inserting special range object. Turnstile. We will end up with non-empty container,
+   can be solved (not in this assignment) if we are planning to reuse it.
+ - who inserts the first special range object? Need some kind of counting. Each iteration 
+   of a thread calculated how many array objects where put at correct positions, when counter
+   is equal to the size of the original array, signal stop. Suggested approach - semaphore.
+
+

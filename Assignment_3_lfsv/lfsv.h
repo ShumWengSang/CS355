@@ -12,6 +12,7 @@ struct Pair
 }; // __attribute__((aligned(16),packed));
 // for some compilers alignment needed to stop std::atomic<Pair>::load to segfault
 
+// Use memory bank to solve ABA
 class MemoryBank
 {
     std::deque<std::vector<int> *> slots;
@@ -52,9 +53,9 @@ class LFSV
     std::atomic<Pair> pdata;
     std::mutex wr_mutex;
 public:
+    // get memory from bank, init to 1
     LFSV() : pdata(Pair { new(mb.Get()) std::vector<int>, 1})
     {
-        //        std::cout << "Is lockfree " << pdata.is_lock_free() << std::endl;
     }
 
     ~LFSV()
@@ -68,6 +69,7 @@ public:
 
     void Insert(int const &v)
     {
+        // Initialize pointer to null, we need a local new and old
         Pair pdata_new, pdata_old;
         pdata_new.pointer = nullptr;
         do
@@ -75,10 +77,10 @@ public:
             // delete pdata_new.pointer;
             if(pdata_new.pointer) {
                 pdata_new.pointer->~vector();
-                pdata_new.ref_count = 0;
                 mb.Store(pdata_new.pointer);
             }
 
+            // Get new and old, use ref count of 1
             pdata_old = pdata.load();
             pdata_old.ref_count = 1;
             pdata_new.pointer = new (mb.Get()) std::vector<int>(*pdata_old.pointer); // pdata_old may be deleted
@@ -93,6 +95,7 @@ public:
             } //first in empty or last element
             else
             {
+                // Linear insertion, can use binary if needed
                 for (; b != e; ++b)
                 {
                     if (*b >= v)
@@ -110,21 +113,21 @@ public:
     }
 
     int operator[](int pos)
-    { // not a const method anymore
+    { 
         Pair pdata_new, pdata_old;
         do 
         { 
-            // before read - increment counter, use CAS
+            // before read - increment counter
             pdata_old = pdata.load();
             pdata_new = pdata_old;
             ++pdata_new.ref_count;
         } while(!(this->pdata).compare_exchange_weak( pdata_old, pdata_new));
 
-        //        std::cout << "Read from " << pdata_new.pointer;
+        // Get return value
         int ret_val = (*pdata_new.pointer)[pos];
 
         do { 
-            // before return - decrement counter, use CAS
+            // before return - decrement counter
             pdata_old = pdata.load();
             pdata_new = pdata_old;
             --pdata_new.ref_count;
