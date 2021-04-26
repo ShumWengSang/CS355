@@ -7,7 +7,7 @@ template< typename T>
 void quicksort_iterative( T* a, unsigned begin, unsigned end );
 
 template< typename T>
-void quicksort(T* a, unsigned, unsigned, int);
+void quicksort(T* a, unsigned, unsigned, unsigned);
 
 #include "quicksort.cpp"
 #endif
